@@ -10,17 +10,11 @@ import redis.clients.jedis.JedisPoolConfig;
 public class RedisPool {
 
 	private static JedisPool pool;
-	private static int objectCount;
 
 	private RedisPool() {
 	}
 
-	public static int getObjectCount() {
-		return objectCount;
-	}
-
 	public static Jedis getJedisObject() {
-		objectCount++;
 		return pool.getResource();
 	}
 
@@ -39,6 +33,7 @@ public class RedisPool {
 		return poolConfig;
 	}
 
+	// This method is used to Initialize Redis Pool
 	public static void init(ServiceConfig config) {
 		if (pool == null) {
 			synchronized (RedisPool.class) {
@@ -46,7 +41,6 @@ public class RedisPool {
 					pool = new JedisPool(buildPoolConfig(config.getRedisPoolConfig()),
 							config.getRedisServerConfig().getHost(), config.getRedisServerConfig().getPort(),
 							config.getRedisServerConfig().getTimeout());
-					objectCount = 0;
 				}
 			}
 		}
